@@ -83,9 +83,9 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
       return 1;
     } else {
       if (sortOrder === 'desc') {
-        return nextStudent.first_name > prevStudent.first_name ? -1 : 1;
+        return nextStudent[`${currentName.value}`] > prevStudent[`${currentName.value}`] ? -1 : 1;
       } else {
-        return nextStudent.first_name < prevStudent.first_name ? -1 : 1;
+        return nextStudent[`${currentName.value}`] < prevStudent[`${currentName.value}`] ? -1 : 1;
       }
     }
   };
