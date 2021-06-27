@@ -14,6 +14,7 @@ import { NameDisplay, StoreState } from "types"
 import * as actions from "../../actions"
 import { faArrowUp, faArrowDown, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from "@material-ui/core"
+import { RollInput } from "shared/models/roll"
 
 export function mapStateToProps({ students, rollStatus }: StoreState) {
   return {
@@ -38,6 +39,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
   const { setStudents, students, rollStatus, setRollStatus } = props
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
+  const [setStudentsApi] = useApi<{ student: RollInput }>({ url: 'save-roll' });
   const [currentName, setCurrentName] = useState({ name: "First Name", value: "first_name" })
   const [sortOrder, setSortOrder] = useState("desc")
   const [isSorting, setIsSorting] = useState(false)
@@ -93,6 +95,15 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
       if(value){
         setRollStatus(value);
       }
+    } else if (action === "save") {
+      students.forEach((student: Person) => {
+        let studentState = {
+          student_id: student.id,
+          roll_state: student?.rollState || 'unmark',
+        };
+        setStudentsApi(studentState);
+        setIsRollMode(false);
+      });
     }
   }
 
