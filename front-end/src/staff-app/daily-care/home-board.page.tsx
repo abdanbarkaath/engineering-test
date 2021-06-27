@@ -59,6 +59,17 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
         setSortOrder('desc');
       }
     }
+    if (action === 'name') {
+      event?.stopPropagation();
+      setStudents(data?.students);
+      setSortOrder('desc');
+      setIsSorting(false);
+      if (currentName.name === 'First Name') {
+        setCurrentName({ name: 'Last Name', value: 'last_name' });
+      } else {
+        setCurrentName({ name: 'First Name', value: 'first_name' });
+      }
+    }
   }
 
   const onActiveRollAction = (action: ActiveRollAction) => {
@@ -66,7 +77,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
       setIsRollMode(false)
     }
   }
-  
+
   const sortStudents = (nextStudent: any, prevStudent: any) => {
     if (!isSorting) {
       return 1;
@@ -113,7 +124,7 @@ const HomeBoardPage = connect(mapStateToProps, mapDispatchToProps)(HomeBoard)
 
 export { HomeBoardPage }
 
-type ToolbarAction = "roll" | "sort"
+type ToolbarAction = "roll" | "sort" | "name"
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
   nameDisplay: NameDisplay
@@ -124,7 +135,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const { onItemClick, nameDisplay, sortOrder, isSorting } = props
   return (
     <S.ToolbarContainer>
-      <div onClick={() => onItemClick("sort")}>
+      <div onClick={(e:any) => onItemClick("name", e)}>
         {nameDisplay.name}
         {sortOrder === "desc" ? (
           <FontAwesomeIcon className="nameSortIcon" icon={isSorting ? faArrowDown : faArrowsAltV} size="1x" onClick={(e: any) => onItemClick("sort", e)} />
