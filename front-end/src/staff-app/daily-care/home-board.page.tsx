@@ -9,14 +9,38 @@ import { Person } from "shared/models/person"
 import { useApi } from "shared/hooks/use-api"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
+import { connect } from 'react-redux';
+import { StoreState } from "types"
+import * as actions from '../../actions';
 
-export const HomeBoardPage: React.FC = () => {
+export function mapStateToProps({ students }: StoreState) {
+  return {
+    students,
+  };
+}
+
+export function mapDispatchToProps(dispatch: any) {
+  return {
+    setStudents: (students?: Person[]) => dispatch(actions.setStudents(students)),
+  };
+}
+
+interface IHomeBoardProps extends StoreState {
+  setStudents: (students?: Person[]) => void;
+}
+
+export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
+  const { setStudents } = props;
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
 
   useEffect(() => {
     void getStudents()
   }, [getStudents])
+
+  useEffect(() => {
+    setStudents(data?.students);
+  }, [data, data?.students]);
 
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
@@ -59,6 +83,10 @@ export const HomeBoardPage: React.FC = () => {
     </>
   )
 }
+
+const HomeBoardPage = connect(mapStateToProps, mapDispatchToProps)(HomeBoard);
+
+export { HomeBoardPage };
 
 type ToolbarAction = "roll" | "sort"
 interface ToolbarProps {
