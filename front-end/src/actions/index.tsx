@@ -7,3 +7,10 @@ export function setStudents(students?: Person[]) {
         students
     };
 }
+
+export function setAttendanceStatus(type:string, id:number) {
+    return {
+        type: constants.SET_ATTENDANCE_STATUS,
+        payload: { type, id }
+    };
+}

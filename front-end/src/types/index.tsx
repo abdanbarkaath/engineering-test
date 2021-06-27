@@ -8,3 +8,8 @@ export interface NameDisplay {
   name: string,
   value: string
 }
+
+export interface RollStatusPayload {
+  type: string,
+  id: number
+}

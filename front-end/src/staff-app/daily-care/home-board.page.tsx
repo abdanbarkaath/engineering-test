@@ -100,7 +100,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
       }
     }
   };
-  
+
   const searchQuery = (student: Person) => {
     if (searching) {
       let studentName = student.first_name.toLowerCase().concat(' ', student.last_name.toLowerCase());
@@ -135,7 +135,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
           </CenteredContainer>
         )}
       </S.PageContainer>
-      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} />
+      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} students={students} />
     </>
   )
 }
