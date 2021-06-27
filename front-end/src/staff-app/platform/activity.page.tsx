@@ -1,10 +1,12 @@
 import React, { useEffect } from "react"
 import styled from "styled-components"
-import { Spacing } from "shared/styles/styles"
+import { BorderRadius, Spacing } from "shared/styles/styles"
 import { useApi } from "shared/hooks/use-api"
 import { ActivityPayload } from "types"
 import { CenteredContainer } from "shared/components/centered-container/centered-container.component"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { RolllStateType } from "shared/models/roll"
+import { Colors } from "shared/styles/colors"
 
 export const ActivityPage: React.FC = () => {
   const [getStudents, data, loadState] = useApi<{ activity: ActivityPayload[] }>({ url: "get-activities" })
@@ -26,6 +28,15 @@ export const ActivityPage: React.FC = () => {
           return (
             <S.ActivityItems key={i}>
               <span>{list.entity.name}</span>
+              <S.ActivityStatus>
+                <S.Icon size={20} border={list.entity.student_roll_states === "unmark"} bgColor={getBgColor(list.entity.student_roll_states)}>
+                  <FontAwesomeIcon icon="check" size={"lg"} />
+                </S.Icon>
+                <span>
+                  <span>Completed On: </span>
+                  <span>{list.entity.completed_at.split("T")[0]}</span>
+                </span>
+              </S.ActivityStatus>
             </S.ActivityItems>
           )
         })}
@@ -37,6 +48,21 @@ export const ActivityPage: React.FC = () => {
       )}
     </S.Container>
   )
+}
+
+function getBgColor(type: RolllStateType) {
+  switch (type) {
+    case "unmark":
+      return "#fff"
+    case "present":
+      return "#13943b"
+    case "absent":
+      return "#9b9b9b"
+    case "late":
+      return "#f5a623"
+    default:
+      return "#13943b"
+  }
 }
 
 const S = {
@@ -59,5 +85,22 @@ const S = {
     color: #4e4e4e;
     font-weight: 600;
     flex-wrap: wrap;
+  `,
+  Icon: styled.div<{ size: number; border: boolean; bgColor: string }>`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background-color: ${({ bgColor }) => bgColor};
+    border: 2px solid ${({ border }) => (border ? Colors.dark.lighter : "transparent")};
+    border-radius: ${BorderRadius.rounded};
+    width: ${({ size }) => size}px;
+    height: ${({ size }) => size}px;
+    margin-bottom: 10px;
+  `,
+  ActivityStatus: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: inherit;
   `,
 }
