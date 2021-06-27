@@ -8,16 +8,16 @@ export interface StoreState {
 }
 
 export interface NameDisplay {
-  name: string,
-  value: string
+  name: string;
+  value: string;
 }
 
 export interface RollStatusPayload {
-  type: string,
-  id: number
+  type: string;
+  id: number;
 }
 
 export interface ActivityPayload {
-  success: boolean
-  activity: Activity
+  success: boolean;
+  activity: Activity;
 }

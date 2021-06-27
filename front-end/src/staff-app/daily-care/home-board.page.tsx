@@ -12,15 +12,15 @@ import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active
 import { connect } from "react-redux"
 import { NameDisplay, StoreState } from "types"
 import * as actions from "../../actions"
-import { faArrowUp, faArrowDown, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faArrowDown, faArrowsAltV } from "@fortawesome/free-solid-svg-icons"
 import { TextField } from "@material-ui/core"
 import { RollInput } from "shared/models/roll"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 
 export function mapStateToProps({ students, rollStatus }: StoreState) {
   return {
     students,
-    rollStatus
+    rollStatus,
   }
 }
 
@@ -33,20 +33,20 @@ export function mapDispatchToProps(dispatch: any) {
 
 interface IHomeBoardProps extends StoreState {
   setStudents: (students?: Person[]) => void
-  setRollStatus: (type: string) => void;
+  setRollStatus: (type: string) => void
 }
 
 export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
   const { setStudents, students, rollStatus, setRollStatus } = props
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
-  const [setStudentsApi] = useApi<{ student: RollInput }>({ url: 'save-roll' });
+  const [setStudentsApi] = useApi<{ student: RollInput }>({ url: "save-roll" })
   const [currentName, setCurrentName] = useState({ name: "First Name", value: "first_name" })
   const [sortOrder, setSortOrder] = useState("desc")
   const [isSorting, setIsSorting] = useState(false)
   const [searching, setSearch] = useState(false)
-  const [query, setQuery] = useState('')
-  const navigate = useNavigate();
+  const [query, setQuery] = useState("")
+  const navigate = useNavigate()
 
   useEffect(() => {
     void getStudents()
@@ -56,36 +56,36 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
     setStudents(data?.students)
   }, [data, data?.students])
 
-  const onToolbarAction = (action: ToolbarAction, event:any) => {
+  const onToolbarAction = (action: ToolbarAction, event: any) => {
     if (action === "roll") {
       setIsRollMode(true)
     }
-    if (action === 'sort') {
-      event?.stopPropagation();
-      setIsSorting(true);
-      if (sortOrder === 'desc') {
-        setSortOrder('asc');
+    if (action === "sort") {
+      event?.stopPropagation()
+      setIsSorting(true)
+      if (sortOrder === "desc") {
+        setSortOrder("asc")
       } else {
-        setSortOrder('desc');
+        setSortOrder("desc")
       }
     }
-    if (action === 'name') {
-      event?.stopPropagation();
-      setStudents(data?.students);
-      setSortOrder('desc');
-      setIsSorting(false);
-      if (currentName.name === 'First Name') {
-        setCurrentName({ name: 'Last Name', value: 'last_name' });
+    if (action === "name") {
+      event?.stopPropagation()
+      setStudents(data?.students)
+      setSortOrder("desc")
+      setIsSorting(false)
+      if (currentName.name === "First Name") {
+        setCurrentName({ name: "Last Name", value: "last_name" })
       } else {
-        setCurrentName({ name: 'First Name', value: 'first_name' });
+        setCurrentName({ name: "First Name", value: "first_name" })
       }
     }
-    if (action === 'search') {
+    if (action === "search") {
       if (event?.target?.value.length > 0) {
-        setQuery(event?.target?.value?.toLowerCase().trim());
-        setSearch(true);
+        setQuery(event?.target?.value?.toLowerCase().trim())
+        setSearch(true)
       } else if (event?.target?.value.length === 0) {
-        setSearch(false);
+        setSearch(false)
       }
     }
   }
@@ -94,8 +94,8 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
     if (action === "exit") {
       setIsRollMode(false)
     } else if (action === "filter") {
-      if(value){
-        setRollStatus(value);
+      if (value) {
+        setRollStatus(value)
       }
     } else if (action === "save") {
       students.forEach((student: Person) => {
@@ -103,42 +103,42 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
           student_roll_states: {
             student_id: student.id,
             roll_state: student?.rollState || "unmark",
-          }
-        };
-        setStudentsApi(studentState);
-        setIsRollMode(false);
+          },
+        }
+        setStudentsApi(studentState)
+        setIsRollMode(false)
         navigate("/staff/activity")
-      });
+      })
     }
   }
 
   const sortStudents = (nextStudent: any, prevStudent: any) => {
     if (!isSorting) {
-      return 1;
+      return 1
     } else {
-      if (sortOrder === 'desc') {
-        return nextStudent[`${currentName.value}`] > prevStudent[`${currentName.value}`] ? -1 : 1;
+      if (sortOrder === "desc") {
+        return nextStudent[`${currentName.value}`] > prevStudent[`${currentName.value}`] ? -1 : 1
       } else {
-        return nextStudent[`${currentName.value}`] < prevStudent[`${currentName.value}`] ? -1 : 1;
+        return nextStudent[`${currentName.value}`] < prevStudent[`${currentName.value}`] ? -1 : 1
       }
     }
-  };
+  }
 
   const searchQuery = (student: Person) => {
     if (searching) {
-      let studentName = student.first_name.toLowerCase().concat(' ', student.last_name.toLowerCase());
-      return studentName.indexOf(query) > -1;
+      let studentName = student.first_name.toLowerCase().concat(" ", student.last_name.toLowerCase())
+      return studentName.indexOf(query) > -1
     } else {
-      return true;
+      return true
     }
-  };
+  }
 
   const filterByAttendance = (student: Person) => {
     if (rollStatus === "all") {
-      return student;
+      return student
     }
-    return student.rollState === rollStatus;
-  };
+    return student.rollState === rollStatus
+  }
 
   return (
     <>
@@ -153,9 +153,13 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
 
         {loadState === "loaded" && data?.students && (
           <>
-            {[...students].sort(sortStudents).filter(searchQuery).filter(filterByAttendance).map((s) => (
-              <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
-            ))}
+            {[...students]
+              .sort(sortStudents)
+              .filter(searchQuery)
+              .filter(filterByAttendance)
+              .map((s) => (
+                <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
+              ))}
           </>
         )}
 
@@ -185,7 +189,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const { onItemClick, nameDisplay, sortOrder, isSorting } = props
   return (
     <S.ToolbarContainer>
-      <div className="toolbarName" onClick={(e:any) => onItemClick("name", e)}>
+      <div className="toolbarName" onClick={(e: any) => onItemClick("name", e)}>
         {nameDisplay.name}
         {sortOrder === "desc" ? (
           <FontAwesomeIcon className="nameSortIcon" icon={isSorting ? faArrowDown : faArrowsAltV} size="1x" onClick={(e: any) => onItemClick("sort", e)} />
@@ -193,7 +197,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           <FontAwesomeIcon className="nameSortIcon" icon={faArrowUp} size="1x" onClick={(e: any) => onItemClick("sort", e)} />
         )}
       </div>
-      <TextField id="standard-basic" placeholder="Search" multiline={false} onChange={(e: any) => onItemClick('search', e)} />
+      <TextField id="standard-basic" placeholder="Search" multiline={false} onChange={(e: any) => onItemClick("search", e)} />
       <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
     </S.ToolbarContainer>
   )
