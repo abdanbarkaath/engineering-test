@@ -13,6 +13,7 @@ import { connect } from "react-redux"
 import { NameDisplay, StoreState } from "types"
 import * as actions from "../../actions"
 import { faArrowUp, faArrowDown, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
+import { TextField } from "@material-ui/core"
 
 export function mapStateToProps({ students }: StoreState) {
   return {
@@ -37,6 +38,8 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
   const [currentName, setCurrentName] = useState({ name: "First Name", value: "first_name" })
   const [sortOrder, setSortOrder] = useState("desc")
   const [isSorting, setIsSorting] = useState(false)
+  const [searching, setSearch] = useState(false)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     void getStudents()
@@ -70,6 +73,14 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
         setCurrentName({ name: 'First Name', value: 'first_name' });
       }
     }
+    if (action === 'search') {
+      if (event?.target?.value.length > 0) {
+        setQuery(event?.target?.value?.toLowerCase().trim());
+        setSearch(true);
+      } else if (event?.target?.value.length === 0) {
+        setSearch(false);
+      }
+    }
   }
 
   const onActiveRollAction = (action: ActiveRollAction) => {
@@ -89,6 +100,15 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
       }
     }
   };
+  
+  const searchQuery = (student: Person) => {
+    if (searching) {
+      let studentName = student.first_name.toLowerCase().concat(' ', student.last_name.toLowerCase());
+      return studentName.indexOf(query) > -1;
+    } else {
+      return true;
+    }
+  };
 
   return (
     <>
@@ -103,7 +123,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
 
         {loadState === "loaded" && data?.students && (
           <>
-            {[...students].sort(sortStudents).map((s) => (
+            {[...students].sort(sortStudents).filter(searchQuery).map((s) => (
               <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
             ))}
           </>
@@ -124,7 +144,7 @@ const HomeBoardPage = connect(mapStateToProps, mapDispatchToProps)(HomeBoard)
 
 export { HomeBoardPage }
 
-type ToolbarAction = "roll" | "sort" | "name"
+type ToolbarAction = "roll" | "sort" | "name" | "search"
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
   nameDisplay: NameDisplay
@@ -143,7 +163,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
           <FontAwesomeIcon className="nameSortIcon" icon={faArrowUp} size="1x" onClick={(e: any) => onItemClick("sort", e)} />
         )}
       </div>
-      <div>Search</div>
+      <TextField id="standard-basic" placeholder="Search" multiline={false} onChange={(e: any) => onItemClick('search', e)} />
       <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
     </S.ToolbarContainer>
   )
