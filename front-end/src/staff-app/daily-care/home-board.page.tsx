@@ -15,24 +15,27 @@ import * as actions from "../../actions"
 import { faArrowUp, faArrowDown, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from "@material-ui/core"
 
-export function mapStateToProps({ students }: StoreState) {
+export function mapStateToProps({ students, rollStatus }: StoreState) {
   return {
     students,
+    rollStatus
   }
 }
 
 export function mapDispatchToProps(dispatch: any) {
   return {
     setStudents: (students?: Person[]) => dispatch(actions.setStudents(students)),
+    setRollStatus: (type: string) => dispatch(actions.setRollStatus(type)),
   }
 }
 
 interface IHomeBoardProps extends StoreState {
   setStudents: (students?: Person[]) => void
+  setRollStatus: (type: string) => void;
 }
 
 export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
-  const { setStudents, students } = props
+  const { setStudents, students, rollStatus, setRollStatus } = props
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [currentName, setCurrentName] = useState({ name: "First Name", value: "first_name" })
@@ -83,9 +86,13 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
     }
   }
 
-  const onActiveRollAction = (action: ActiveRollAction) => {
+  const onActiveRollAction = (action: ActiveRollAction, value?: string) => {
     if (action === "exit") {
       setIsRollMode(false)
+    } else if (action === "filter") {
+      if(value){
+        setRollStatus(value);
+      }
     }
   }
 
@@ -110,6 +117,13 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
     }
   };
 
+  const filterByAttendance = (student: Person) => {
+    if (rollStatus === "all") {
+      return student;
+    }
+    return student.rollState === rollStatus;
+  };
+
   return (
     <>
       <S.PageContainer>
@@ -123,7 +137,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
 
         {loadState === "loaded" && data?.students && (
           <>
-            {[...students].sort(sortStudents).filter(searchQuery).map((s) => (
+            {[...students].sort(sortStudents).filter(searchQuery).filter(filterByAttendance).map((s) => (
               <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
             ))}
           </>

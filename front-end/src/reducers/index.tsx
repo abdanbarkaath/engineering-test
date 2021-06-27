@@ -3,6 +3,7 @@ import { StoreState } from '../types';
 
 const initState: StoreState = {
   students: [],
+  rollStatus: 'all',
 };
 
 export default function studentReducer(state: StoreState = initState, action: any): StoreState {
@@ -15,7 +16,10 @@ export default function studentReducer(state: StoreState = initState, action: an
       let indexOfStudent = storeStudents.findIndex((student: any) => student.id === action.payload.id);
       storeStudents[indexOfStudent].rollState = action.payload.type;
       return { ...state, students: [...storeStudents] };
-          
+    
+    case ACTIONS.SET_ROLL_STATUS:
+      return { ...state, rollStatus: action.payload.type };  
+
     default:
       return state;
   }

@@ -14,3 +14,11 @@ export function setAttendanceStatus(type:string, id:number) {
         payload: { type, id }
     };
 }
+
+export function setRollStatus(type:string) {
+    return {
+        type: constants.SET_ROLL_STATUS,
+        payload: { type }
+    };
+}
+

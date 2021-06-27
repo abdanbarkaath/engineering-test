@@ -31,6 +31,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
               { type: "late", count: getStatusCount('late') },
               { type: "absent", count: getStatusCount('absent') },
             ]}
+            onItemClick={(value: string) => onItemClick("filter", value)}
           />
           <div style={{ marginTop: Spacing.u6 }}>
             <Button color="inherit" onClick={() => onItemClick("exit")}>
