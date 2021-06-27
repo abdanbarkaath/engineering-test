@@ -135,7 +135,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const { onItemClick, nameDisplay, sortOrder, isSorting } = props
   return (
     <S.ToolbarContainer>
-      <div onClick={(e:any) => onItemClick("name", e)}>
+      <div className="toolbarName" onClick={(e:any) => onItemClick("name", e)}>
         {nameDisplay.name}
         {sortOrder === "desc" ? (
           <FontAwesomeIcon className="nameSortIcon" icon={isSorting ? faArrowDown : faArrowsAltV} size="1x" onClick={(e: any) => onItemClick("sort", e)} />

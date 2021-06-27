@@ -21,3 +21,6 @@
 .nameSortIcon {
   padding-left: 10px;
 }
+.toolbarName {
+  cursor: pointer;
+}
