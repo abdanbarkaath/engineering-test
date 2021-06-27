@@ -15,6 +15,7 @@ import * as actions from "../../actions"
 import { faArrowUp, faArrowDown, faArrowsAltV } from '@fortawesome/free-solid-svg-icons';
 import { TextField } from "@material-ui/core"
 import { RollInput } from "shared/models/roll"
+import { useNavigate } from 'react-router-dom'
 
 export function mapStateToProps({ students, rollStatus }: StoreState) {
   return {
@@ -45,6 +46,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
   const [isSorting, setIsSorting] = useState(false)
   const [searching, setSearch] = useState(false)
   const [query, setQuery] = useState('')
+  const navigate = useNavigate();
 
   useEffect(() => {
     void getStudents()
@@ -105,6 +107,7 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
         };
         setStudentsApi(studentState);
         setIsRollMode(false);
+        navigate("/staff/activity")
       });
     }
   }
