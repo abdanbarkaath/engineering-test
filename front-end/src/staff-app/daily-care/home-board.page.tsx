@@ -98,8 +98,10 @@ export const HomeBoard: React.FC<IHomeBoardProps> = (props) => {
     } else if (action === "save") {
       students.forEach((student: Person) => {
         let studentState = {
-          student_id: student.id,
-          roll_state: student?.rollState || 'unmark',
+          student_roll_states: {
+            student_id: student.id,
+            roll_state: student?.rollState || "unmark",
+          }
         };
         setStudentsApi(studentState);
         setIsRollMode(false);
