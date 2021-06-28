@@ -29,7 +29,7 @@ export const ActivityPage: React.FC = () => {
             <S.ActivityItems key={i}>
               <span>{list.entity.name}</span>
               <S.ActivityStatus>
-                <S.Icon size={20} border={list.entity.student_roll_states === "unmark"} bgColor={getBgColor(list.entity.student_roll_states)}>
+                <S.Icon size={20} border={list.entity.student_roll_states.roll_state === "unmark"} bgColor={getBgColor(list.entity.student_roll_states.roll_state)}>
                   <FontAwesomeIcon icon="check" size={"lg"} />
                 </S.Icon>
                 <span>
